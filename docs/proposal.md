@@ -1,4 +1,4 @@
-# Modeling Coupled Dynamical Systems Using Complex Networks
+# Complex Network Representations for Coupled Dynamical Systems: Dynamical Networks
 ### By Audun Myers
 
 <p align="center">
