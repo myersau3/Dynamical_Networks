@@ -3,6 +3,7 @@
 
 <p align="center">
   <img src="images/coupled_dyn_sys_network.png" width="250">
+  <em>Example coupled dynamical system represented using a complex network with each node as a state variable's dynamics and edges weighted between coupled variables.</em>
 </p>
 
 ## Overview
