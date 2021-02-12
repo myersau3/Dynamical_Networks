@@ -1,7 +1,7 @@
 # Modeling Coupled Dynamical Systems Using Complex Networks
 ## By Audun Myers
 
-![alt text](images/coupled_dyn_sys_network.png | width=100)
+![](images/coupled_dyn_sys_network.png | width=48)
 
 # Overview
 
