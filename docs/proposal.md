@@ -1,8 +1,8 @@
 # Modeling Coupled Dynamical Systems Using Complex Networks
 ## By Audun Myers
 
-![](images/coupled_dyn_sys_network.png | width=48)
-
+![](images/coupled_dyn_sys_network.png)
+<img src="images/coupled_dyn_sys_network.png" width="48">
 # Overview
 
 This software package provides code for analyzing and modeling coupled dynamical systems through complex networks networks. Coupled dynamical systems are present in many physical, biological, and social dynamical systems. This package will provide both data sets for these catagories as well as new and commonly used tools to analyze the resulting complex networks.
