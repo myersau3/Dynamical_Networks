@@ -38,7 +38,7 @@ I already have experience with documentation using sphinx so I am not concerned 
 #### Challenges:
 A major challenge for me will be immersing myself in the field of network representations of complex networks. While I have experience with graph theory, I have not researched methods for generating complex networks from coupled dynamical system data and forsee this being a challenge. If I am unable to make as much progress on researching current methods, I will focus on a single model (probably supplier-manufacturer coupled dynamical systems) and only the basic tools to analyze them. I hope I can do much more than this though.
 
-#### Deviations
+#### Deviations:
 I do not plan for my project to use any other language than Python. I do hope to incorporate outside packages (e.g. network analysis packages such as networkx) whenever possible.
 
 
