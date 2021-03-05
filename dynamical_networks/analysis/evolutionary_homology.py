@@ -6,7 +6,7 @@ This functions calculates the evelutionary homology of a dynamical networks adja
 """
 
 def EveHom(A):
-    """This function takes the time varying adjacency matrix and returns a statistic in time.
+    """This function takes the time varying adjacency matrix and returns the evolutionary homology.
 
     Args:
        A (array): Time varying adjacency matrix.
