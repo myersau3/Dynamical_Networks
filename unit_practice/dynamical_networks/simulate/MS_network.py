@@ -24,7 +24,6 @@ def MS_simulation(t, parameters):
     from scipy.integrate import odeint
     import odeintw as OIW
     
-    
     #setting simulation time series parameters
     M, K_M, alpha_M, B_M1, B_M2, mu_M, S, K_S, alpha_S, B_S1, B_S2, mu_S, h, A_MS = parameters
     m, s = len(M), len(S)
@@ -224,7 +223,7 @@ def MS_network(A_MS, M_arr, S_arr):
 
 if __name__ == '__main__':
     
-    from MS_network import MS_simulation, MS_network
+    from dynamical_networks.simulate.MS_network import MS_simulation, MS_network
     import numpy as np
     import matplotlib.pyplot as plt
     

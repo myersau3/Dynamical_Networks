@@ -20,15 +20,6 @@ def EveHom(A):
     """
 
     import numpy as np
-    
-    #-------------------Run input data tests--------------------------
-    if type(A) != np.ndarray:
-        # the data type should be a numpy array of 2d arrays
-        raise TypeError("Input must be numpy array.")
-    if type(A[0][0]) != np.ndarray:
-        # the size of each adjacency matrix should not be empty
-        raise TypeError("Input must be numpy array of 2D (nxn) arrays. i.e. Nx(nxn) array.")
-        
     statistic = []
     for a in A:
         stat = np.nanmax(a)
