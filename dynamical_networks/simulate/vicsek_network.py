@@ -54,8 +54,7 @@ def vicsek_model(t, initial_conditions, velocity, noise_std, eps, B):
             lim = 1
             plt.xlim(-0,lim)
             plt.ylim(-0,lim)
-            plt.show()
-            
+            plt.show()     
         
     return pos
     
