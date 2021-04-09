@@ -58,7 +58,6 @@ if __name__ == '__main__':
     A = np.random.rand(N,N)-0.5
     A = A + A.T
     np.fill_diagonal(A,0)
-    #A[A>0.5] = 1
     
     #nxn linking matrix
     n = 3
@@ -67,8 +66,6 @@ if __name__ == '__main__':
     
     #Nxn initial conditions matrix
     U_0 = np.random.rand(N,n)-0.5
-    #U_0 = np.zeros((N,n))
-    #U_0[0][0] = 1
     
     #parameters for lorenz
     parameters = [60,10,8/3]\

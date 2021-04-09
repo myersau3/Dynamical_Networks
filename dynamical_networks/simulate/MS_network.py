@@ -6,7 +6,7 @@ This function simulates a Manufacturer-Supplier (MS) dynamical network.
 """
 
 
-def MS_network(A_MS, M_arr, S_arr):
+def MS_network(A_MS, M_arr, S_arr, make_gif = False, make_graph_plot = False):
     """This function takes system parameters to develop a time dependent adjacency matrix A(t).
 
     Args:
@@ -23,7 +23,6 @@ def MS_network(A_MS, M_arr, S_arr):
     """
     import numpy as np
     import networkx as nx
-    import matplotlib.gridspec as gridspec
     import matplotlib.pyplot as plt
     E = []
     num_man = len(A_MS)
@@ -51,46 +50,9 @@ def MS_network(A_MS, M_arr, S_arr):
             A[e[0], e[1]] = e_ij
         A = A+A.T
         As.append(A)
+      
+        
     
-    make_graph_plot = True
-    if make_graph_plot == True:
-        top = nx.bipartite.sets(G)[0]
-        pos = nx.bipartite_layout(G, top)
-        colors = ['lightgreen'] * num_man + ['lightblue'] * num_sup
-        labeldict = {}
-        for i in range(num_man): 
-            labeldict[i] = r'$M_{'+str(i)+'}$'
-        for i in range(num_sup): 
-            j = i+num_man
-            labeldict[j] = r'$S_{'+str(i)+'}$'
-            
-        j = 0
-        node_sizes = []
-        M_max = np.amax(M_arr)
-        S_max = np.amax(S_arr)
-        for i in range(num_man): 
-            node_sizes.append(2000*M_arr.T[i][j]/M_max)
-        for i in range(num_sup): 
-            node_sizes.append(2000*S_arr.T[i][j]/S_max)
-            
-        weights = []
-        for e in E:
-            w1 = M_arr.T[e[0]][j]/M_max
-            w2 = S_arr.T[e[1]-num_man][j]/S_max
-            w = np.min([w1, w2])
-            weights.append(4*w) 
-            
-        fig = plt.figure(figsize = (4,3))
-        print(pos)
-        nx.draw(G, pos=pos, with_labels=False, labels = labeldict, 
-                node_color=colors, node_size = node_sizes, width = weights)
-        axis = plt.gca()
-        axis.set_xlim([1.25*x for x in axis.get_xlim()])
-        axis.set_ylim([1.25*y for y in axis.get_ylim()])
-        plt.show()
-        
-        
-    make_gif = False
     if make_gif == True:
         top = nx.bipartite.sets(G)[0]
         pos = nx.bipartite_layout(G, top)
@@ -119,8 +81,7 @@ def MS_network(A_MS, M_arr, S_arr):
                 w = np.min([w1, w2])
                 weights.append(4*w) 
                 
-            fig = plt.figure(figsize = (4,3))
-            print(pos)
+            plt.figure(figsize = (4,3))
             nx.draw(G, pos=pos, with_labels=False, labels = labeldict, 
                     node_color=colors, node_size = node_sizes, width = weights)
             axis = plt.gca()
@@ -145,6 +106,47 @@ def MS_network(A_MS, M_arr, S_arr):
             images.append(imageio.imread('C:\\Users\\myersau3.EGR\\Desktop\\python_png\\frames\\frame'+str(i)+'.png'))
         imageio.mimsave('C:\\Users\\myersau3.EGR\\Desktop\\python_png\\MS_network_gif.gif', images, fps = 50)
 
+
+
+    
+    if make_graph_plot == True:
+        top = nx.bipartite.sets(G)[0]
+        pos = nx.bipartite_layout(G, top)
+        colors = ['lightgreen'] * num_man + ['lightblue'] * num_sup
+        labeldict = {}
+        for i in range(num_man): 
+            labeldict[i] = r'$M_{'+str(i)+'}$'
+        for i in range(num_sup): 
+            j = i+num_man
+            labeldict[j] = r'$S_{'+str(i)+'}$'
+            
+        j = 0
+        node_sizes = []
+        M_max = np.amax(M_arr)
+        S_max = np.amax(S_arr)
+        for i in range(num_man): 
+            node_sizes.append(2000*M_arr.T[i][j]/M_max)
+        for i in range(num_sup): 
+            node_sizes.append(2000*S_arr.T[i][j]/S_max)
+            
+            
+        weights = []
+        for e in E:
+            w1 = M_arr.T[e[0]][j]/M_max
+            w2 = S_arr.T[e[1]-num_man][j]/S_max
+            w = np.min([w1, w2])
+            weights.append(4*w) 
+            
+            
+        plt.figure(figsize = (4,3))
+        nx.draw(G, pos=pos, with_labels=False, labels = labeldict, 
+                node_color=colors, node_size = node_sizes, width = weights)
+        axis = plt.gca()
+        axis.set_xlim([1.25*x for x in axis.get_xlim()])
+        axis.set_ylim([1.25*y for y in axis.get_ylim()])
+        plt.show()
+        
+        
     return np.array(As)
 
 
@@ -285,13 +287,6 @@ def MS_simulation(t, parameters):
         dM, dS = dot_MS(M, K_M, alpha_M, B_M1, B_M2, mu_M,S, K_S, alpha_S, B_S1, B_S2, mu_S, h, A_MS, delta)
         M, S = M+dM*dt, S+dS*dt
         
-        if kill_CD > 100 :
-            M[0] = M[0] - 0.0005
-        M[np.isnan(M)] = 0
-        M[M<0] = 0
-        S[np.isnan(S)] = 0
-        S[S<0] = 0
-        
         M_arr.append(M)
         S_arr.append(S)
     
@@ -344,18 +339,20 @@ if __name__ == '__main__':
     h = 2
     
     
-    
     # package parameters and define time array
     parameters = [M, K_M, alpha_M, B_M1, B_M2, mu_M,S, K_S, alpha_S, B_S1, B_S2, mu_S, h, A_MS]
     fs, L = 200, 199
     t = np.linspace(0, L,int(L*fs))
     
+    
+    
     #run simulation
     M_arr, S_arr = MS_simulation(t, parameters)
+    print(M_arr)
     A = MS_network(A_MS, M_arr, S_arr)
     
-    #plot resulting simulation throughput
     
+    #plot resulting simulation throughput
     for i in range(len(M_arr[0])):
         plt.plot(t, M_arr.T[i], label = r'$M_{'+str(i)+'}$')
     plt.legend()
@@ -369,10 +366,7 @@ if __name__ == '__main__':
     plt.ylim(0,)
     plt.grid()
     plt.show()
-    
 
-    
-    A = MS_network(A_MS, M_arr, S_arr)
     
     
     

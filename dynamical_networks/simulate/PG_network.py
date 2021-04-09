@@ -49,29 +49,27 @@ def get_edge_list(A):
                 E.append([i,j])
     return np.array(E)
     
-def PG_simulation(A = None, K_0 = 1.63, P_gen = 1.5, P_con = 1, alpha = 0.6, I_0 = 1,
-                  damping = 0.5, simulation_method = 'dynamic'):
-    
-    """ This is a function to simulate a power grid from the paper: Dynamically induced cascading failures in power grids.
-    This works by implementing either a static or dynamic model for the swing equation.
-        
-    The default parameters are for the first example in the results section.
+def PG_network(A, t, V_gen, V_con, K_0 = 1.63, P_gen = 1.5, P_con = 1, alpha = 0.6, I_0 = 1,
+                  damping = 0.5):
+    """This function simulates and returns a power grids network through the adjacency matrix over time t.
+
+    Args:
+       t (array): time array
+
+    Kwargs:
+       plotting (bool): Plotting for user interpretation. defaut is False.
+
+    Returns:
+       (matrix): A, an n by n matrix A over time t.
+
     """
     
     import networkx as nx
-    import matplotlib.pyplot as plt
     import numpy as np
-    
-    if A == None: #A is the adjacency array for edges (lines) in power grid
-        A = np.array([[0, 1, 1, 0, 1],
-                      [1, 0, 1, 1, 0],
-                      [1, 1, 0, 1, 0],
-                      [0, 1, 1, 0, 1],
-                      [1, 0, 0, 1, 0]])
+
     A_0 = np.copy(A) #use copy of adjacency matrix for plotting all the flows
     E = get_edge_list(A)
-    print(E)
-    
+
     def swing_equation(omega, theta):
         d_theta, d_omega = np.zeros((N,)), np.zeros((N,))
         for i in range(N):
@@ -86,9 +84,6 @@ def PG_simulation(A = None, K_0 = 1.63, P_gen = 1.5, P_con = 1, alpha = 0.6, I_0
     
     G = nx.convert_matrix.from_numpy_matrix(A)
     N = G.number_of_nodes()
-
-    V_gen = np.array([2, 5]) - 1 #indices of generators
-    V_con = np.array([1, 3, 4]) - 1 #indices of consumers
     
     P = np.zeros((N,)) 
     P[V_gen] = P_gen
@@ -104,79 +99,31 @@ def PG_simulation(A = None, K_0 = 1.63, P_gen = 1.5, P_con = 1, alpha = 0.6, I_0
     #get new steady state values
     
     
-    if simulation_method == 'dynamic': #----------------------------------------------------
-        print(simulation_method, 'simulation')
+    theta, omega = PG_steady_state(N, P, K)
+    Fs = []
+    dt = t[1]-t[0]
+    for t_i in t:
         
-        theta, omega = PG_steady_state(N, P, K)
-        Fs = []
-        t = np.linspace(0,12, 5000)
-        dt = t[1]-t[0]
-        for t_i in t:
+        e_kill = (1,3)
+        if t_i > 1: # remove line 4-2 at 1 second
+            K[e_kill[0]][e_kill[1]], K[e_kill[1]][e_kill[0]] = 0, 0
             
-            e_kill = (1,3)
-            if t_i > 1: # remove line 4-2 at 1 second
-                K[e_kill[0]][e_kill[1]], K[e_kill[1]][e_kill[0]] = 0, 0
-                
-            d_theta, d_omega = swing_equation(omega, theta)
-            theta, omega = theta+d_theta*dt, omega+d_omega*dt
-            F = PG_flows(theta, omega, K, N)
+        d_theta, d_omega = swing_equation(omega, theta)
+        theta, omega = theta+d_theta*dt, omega+d_omega*dt
+        F = PG_flows(theta, omega, K, N)
+        
+        for e in E:
+            if np.abs(F[e[0],e[1]]) > C[e[0],e[1]]: # if flow is greater than line capacity
+                K[e[0]][e[1]], K[e[1]][e[0]] = 0, 0
             
-            for e in E:
-                if np.abs(F[e[0],e[1]]) > C[e[0],e[1]]: # if flow is greater than line capacity
-                    K[e[0]][e[1]], K[e[1]][e[0]] = 0, 0
-                
-            flows = []
-            for e in E:
-                flows.append(np.abs(F[e[0], e[1]]))
-            Fs.append(flows)
-            
-        Fs = np.array(Fs).T
+        flows = []
+        for e in E:
+            flows.append(np.abs(F[e[0], e[1]]))
+        Fs.append(flows)
         
-        
-        
-        #---------------PLOTTING-------------------
-        plt.figure(figsize = (10,5))
-        TextSize = 35
-        for i in range(len(Fs)):
-            plt.plot(t, Fs[i], label = '$('+str(E[i][0]+1)+','+str(E[i][1]+1)+')$')
-        plt.plot([0,max(t)], [alpha*K_0, alpha*K_0], 'k--')
-        
-        plt.grid()
-        plt.xlim(0,max(t))
-        plt.ylim(0,)
-        plt.xticks(size = TextSize)
-        plt.yticks(size = TextSize)
-        plt.xlabel(r'$t$', size = TextSize)
-        plt.ylabel(r'$|F_{i,j}|$', size = TextSize)
-        plt.legend(loc = 'upper right', fontsize = TextSize-12, ncol = 1)
-        plt.show()
-         
+    Fs = np.array(Fs).T  
     
-    return F
-    
-
-def PG_network():
-    """This function simulates and returns a power grids network through the adjacency matrix over time t.
-
-    Args:
-       t (array): time array
-
-    Kwargs:
-       plotting (bool): Plotting for user interpretation. defaut is False.
-
-    Returns:
-       (matrix): A, an n by n matrix A over time t.
-
-    """
-
-    import numpy as np
-    As = []
-    for i in range(100):
-        A = np.zeros((10,10))
-        As.append(A)
-    
-    
-    return np.array(As)
+    return Fs, E
 
 
 # In[ ]:
@@ -184,6 +131,74 @@ def PG_network():
 
 if __name__ == '__main__':
     #from dynamical_networks.simulate.PG_network import PG_network
-    A = PG_simulation()
+    
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
+    t = np.linspace(0,12, 5000)
+    P_gen = 1
+    P_con = 2
+    K_0 = 1.63
+    I_0 = 1 
+    damping = 0.5
+    alpha = 0.6
+    V_gen = np.array([1, 4]) #vertices indices of generates and consumers
+    V_con = np.array([0, 2, 3])
+    A = np.array([[0, 1, 1, 0, 1],
+                  [1, 0, 1, 1, 0],
+                  [1, 1, 0, 1, 0],
+                  [0, 1, 1, 0, 1],
+                  [1, 0, 0, 1, 0]])
+    
+    
+    
+    Fs, E = PG_network(A, t, V_gen, V_con, K_0, P_gen, P_con, alpha, I_0, damping)
+    
+    
+    #---------------PLOTTING-------------------
+    
+    plt.figure(figsize = (10,5))
+    TextSize = 35
+    for i in range(len(Fs)):
+        plt.plot(t, Fs[i], label = '$('+str(E[i][0]+1)+','+str(E[i][1]+1)+')$')
+    plt.plot([0,max(t)], [alpha*K_0, alpha*K_0], 'k--')
+    
+    plt.grid()
+    plt.xlim(0,max(t))
+    plt.ylim(0,)
+    plt.xticks(size = TextSize)
+    plt.yticks(size = TextSize)
+    plt.xlabel(r'$t$', size = TextSize)
+    plt.ylabel(r'$|F_{i,j}|$', size = TextSize)
+    plt.legend(loc = 'upper right', fontsize = TextSize-12, ncol = 1)
+    plt.show()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
