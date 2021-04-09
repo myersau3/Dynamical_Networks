@@ -2,6 +2,7 @@
 
 Install package as: pip install Dynamical-Networks
 
+See documentation here: 
 
 This repository holds the Python code for analyzing and creating complex network representations of coupled dynamical systems.
 
