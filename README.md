@@ -2,7 +2,7 @@
 
 Install package as: 
 
-    pip install Dynamical-Networks
+    pip install dynamical_networks
 
 See examples here: https://github.com/myersau3/Dynamical_Networks/tree/main/Examples
 
