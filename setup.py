@@ -14,7 +14,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="dynamical_networks", # Replace with your own username
-    version="0.1.2",
+    version="0.1.3",
     author="Audun Myers",
     author_email="myersau3@msu.edu",
     description="A package for dynamical networks simulations and analysis.",
