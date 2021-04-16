@@ -137,7 +137,7 @@ if __name__ == '__main__':
     
     t = np.linspace(0,12, 5000)
     P_gen = 1
-    P_con = 2
+    P_con = 1
     K_0 = 1.63
     I_0 = 1 
     damping = 0.5
