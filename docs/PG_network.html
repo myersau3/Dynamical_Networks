@@ -181,7 +181,7 @@
 <p>This function simulates a Manufacturer-Supplier (MS) dynamical network.</p>
 <dl class="py function">
 <dt id="dynamical_networks.simulate.MS_network.MS_network">
-<code class="sig-prename descclassname">dynamical_networks.simulate.MS_network.</code><code class="sig-name descname">MS_network</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A_MS</span></em>, <em class="sig-param"><span class="n">M_arr</span></em>, <em class="sig-param"><span class="n">S_arr</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dynamical_networks/simulate/MS_network.html#MS_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dynamical_networks.simulate.MS_network.MS_network" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">dynamical_networks.simulate.MS_network.</code><code class="sig-name descname">MS_network</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A_MS</span></em>, <em class="sig-param"><span class="n">M_arr</span></em>, <em class="sig-param"><span class="n">S_arr</span></em>, <em class="sig-param"><span class="n">make_gif</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">make_graph_plot</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dynamical_networks/simulate/MS_network.html#MS_network"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dynamical_networks.simulate.MS_network.MS_network" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function takes system parameters to develop a time dependent adjacency matrix A(t).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -235,9 +235,54 @@
 </div>
 <p>The following is an example simulation of the supplier-manufacturer dynamical network:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dynamical_networks.simulate.PG_network</span> <span class="kn">import</span> <span class="n">PG_network</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">A</span> <span class="o">=</span>  <span class="o">=</span> <span class="n">PG_network</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+<span class="n">P_gen</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">P_con</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">K_0</span> <span class="o">=</span> <span class="mf">1.63</span>
+<span class="n">I_0</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">damping</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span>
+<span class="n">V_gen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span> <span class="c1">#vertices indices of generates and consumers</span>
+<span class="n">V_con</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+
+
+<span class="n">Fs</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="n">PG_network</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">V_gen</span><span class="p">,</span> <span class="n">V_con</span><span class="p">,</span> <span class="n">K_0</span><span class="p">,</span> <span class="n">P_gen</span><span class="p">,</span> <span class="n">P_con</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">I_0</span><span class="p">,</span> <span class="n">damping</span><span class="p">,</span> <span class="n">e_cut</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+
+
+<span class="c1">#---------------PLOTTING-------------------</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">TextSize</span> <span class="o">=</span> <span class="mi">35</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Fs</span><span class="p">)):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Fs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;$(&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">t</span><span class="p">)],</span> <span class="p">[</span><span class="n">alpha</span><span class="o">*</span><span class="n">K_0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">*</span><span class="n">K_0</span><span class="p">],</span> <span class="s1">&#39;k--&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">TextSize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="n">TextSize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$t$&#39;</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">TextSize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$|F_{i,j}|$&#39;</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="n">TextSize</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="n">TextSize</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
+</div>
+<p>Where the output for this example is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Figure</span> <span class="n">results</span>
+</pre></div>
+</div>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="_images/pg_example.png"><img alt="_images/pg_example.png" src="_images/pg_example.png" style="width: 676.0px; height: 364.0px;" /></a>
 </div>
 
 

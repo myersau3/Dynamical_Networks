@@ -24,6 +24,6 @@ Bugs reports and feature reqests can be posted on the `github issues page <https
 Installation
 **************
 
-This package is (soon) available through a pip install::
+This package is available through a pip install::
 
 	pip install dynamical_networks
