@@ -50,7 +50,7 @@ def get_edge_list(A):
     return np.array(E)
     
 def PG_network(A, t, V_gen, V_con, K_0 = 1.63, P_gen = 1.5, P_con = 1, alpha = 0.6, I_0 = 1,
-                  damping = 0.5):
+                  damping = 0.5, e_cut = (2,4)):
     """This function simulates and returns a power grids network through the adjacency matrix over time t.
 
     Args:
@@ -102,11 +102,10 @@ def PG_network(A, t, V_gen, V_con, K_0 = 1.63, P_gen = 1.5, P_con = 1, alpha = 0
     theta, omega = PG_steady_state(N, P, K)
     Fs = []
     dt = t[1]-t[0]
+    e_cut = [e_cut[0]-1, e_cut[1]-1]
     for t_i in t:
-        
-        e_kill = (1,3)
         if t_i > 1: # remove line 4-2 at 1 second
-            K[e_kill[0]][e_kill[1]], K[e_kill[1]][e_kill[0]] = 0, 0
+            K[e_cut[0]][e_cut[1]], K[e_cut[1]][e_cut[0]] = 0, 0
             
         d_theta, d_omega = swing_equation(omega, theta)
         theta, omega = theta+d_theta*dt, omega+d_omega*dt
@@ -152,7 +151,7 @@ if __name__ == '__main__':
     
     
     
-    Fs, E = PG_network(A, t, V_gen, V_con, K_0, P_gen, P_con, alpha, I_0, damping)
+    Fs, E = PG_network(A, t, V_gen, V_con, K_0, P_gen, P_con, alpha, I_0, damping, e_cut = (2,4))
     
     
     #---------------PLOTTING-------------------
