@@ -1,6 +1,7 @@
 # Complex Network Representations for Coupled Dynamical Systems: Dynamical Networks
 
-Full documentation available here: 
+Full documentation available here: http://www.audunmyers.com/Dynamical_Networks/
+
 Install package as: 
 
     pip install dynamical_networks
